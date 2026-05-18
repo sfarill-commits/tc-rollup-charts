@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TC Integration Rollup — Charts</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  :root {
+    --green: #1D9E75;
+    --red: #E24B4A;
+    --blue: #378ADD;
+    --amber: #EF9F27;
+    --gray: #B4B2A9;
+    --bg: #F7F6F2;
+    --surface: #FFFFFF;
+    --text: #1C1B18;
+    --muted: #6B6A63;
+    --border: rgba(0,0,0,0.08);
+    --grid: rgba(0,0,0,0.06);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+  header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 1.25rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header-left { display: flex; align-items: baseline; gap: 12px; }
+  .header-title { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; }
+  .header-sub { font-size: 12px; color: var(--muted); font-family: 'DM Mono', monospace; }
+  .header-links { display: flex; gap: 12px; }
+  .header-links a {
+    font-size: 12px; font-weight: 500; padding: 6px 14px;
+    border-radius: 6px; text-decoration: none; border: 1px solid var(--border);
+    color: var(--muted); transition: all 0.15s;
+  }
+  .header-links a:hover { background: var(--bg); color: var(--text); }
+  .container { max-width: 1100px; margin: 0 auto; padding: 2rem; }
+  .metric-row {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 2rem;
+  }
+  .metric {
+    background: var(--surface); border-radius: 10px; padding: 16px 18px;
+    border: 1px solid var(--border);
+  }
+  .metric-val { font-size: 28px; font-weight: 600; letter-spacing: -0.02em; line-height: 1; }
+  .metric-lbl { font-size: 11px; color: var(--muted); margin-top: 4px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.04em; }
+  .metric-sub { font-size: 11px; color: var(--gray); margin-top: 2px; }
+  .blocked-bar {
+    background: #FFF8ED; border: 1px solid #F5D78B; border-radius: 10px;
+    padding: 14px 18px; margin-bottom: 2rem;
+  }
+  .blocked-title { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: #9B6E00; margin-bottom: 8px; }
+  .blocked-items { display: flex; flex-direction: column; gap: 4px; }
+  .blocked-item { font-size: 12px; color: #7A5500; line-height: 1.4; }
+  .blocked-item a { color: #9B6E00; font-family: 'DM Mono', monospace; font-size: 11px; }
+  .section-title {
+    font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--muted); margin-bottom: 10px; margin-top: 2rem;
+  }
+  .legend { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 10px; }
+  .legend span { display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--muted); }
+  .ld { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+  .chart-card {
+    background: var(--surface); border-radius: 10px; padding: 20px;
+    border: 1px solid var(--border); margin-bottom: 16px;
+  }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .chart-wrap { position: relative; width: 100%; }
+  .as-of {
+    font-size: 11px; color: var(--muted); font-family: 'DM Mono', monospace;
+    margin-bottom: 1.5rem; padding: 10px 14px; background: var(--surface);
+    border-radius: 8px; border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .check { color: var(--green); font-weight: 500; }
+  footer {
+    text-align: center; padding: 2rem; font-size: 11px; color: var(--gray);
+    font-family: 'DM Mono', monospace; border-top: 1px solid var(--border);
+    margin-top: 2rem;
+  }
+  @media (max-width: 700px) {
+    .metric-row { grid-template-columns: repeat(2, 1fr); }
+    .two-col { grid-template-columns: 1fr; }
+    header { flex-direction: column; align-items: flex-start; gap: 10px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <span class="header-title">TC — TMS Connectivity</span>
+    <span class="header-sub" id="header-date">Loading...</span>
+  </div>
+  <div class="header-links">
+    <a href="https://trypallet.atlassian.net/wiki/spaces/TC/pages/103973227" target="_blank">Confluence →</a>
+    <a href="https://trypallet.atlassian.net/jira/software/projects/TC/boards" target="_blank">Jira board →</a>
+  </div>
+</header>
+
+<div class="container">
+
+  <div class="as-of">
+    <span id="as-of-text">Loading...</span>
+    <span class="check" id="ambiguity-check">...</span>
+  </div>
+
+  <div class="metric-row" id="metrics"></div>
+
+  <div class="blocked-bar">
+    <div class="blocked-title">Blocked — leadership action needed</div>
+    <div class="blocked-items" id="blocked-items"></div>
+  </div>
+
+  <div class="section-title">Sprint velocity — Jan to May 2026</div>
+  <div class="legend">
+    <span><span class="ld" style="background:#1D9E75"></span>Done</span>
+    <span><span class="ld" style="background:#E24B4A"></span>Cancelled</span>
+  </div>
+  <div class="chart-card">
+    <div class="chart-wrap" style="height:200px">
+      <canvas id="c1" role="img" aria-label="Sprint velocity chart"></canvas>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div>
+      <div class="section-title">By issue type</div>
+      <div class="legend">
+        <span><span class="ld" style="background:#1D9E75"></span>Done</span>
+        <span><span class="ld" style="background:#E24B4A"></span>Cancelled</span>
+      </div>
+      <div class="chart-card">
+        <div class="chart-wrap" style="height:260px">
+          <canvas id="c2" role="img" aria-label="Issue type breakdown"></canvas>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="section-title">Integration type (refined)</div>
+      <div class="legend">
+        <span><span class="ld" style="background:#1D9E75"></span>Done</span>
+        <span><span class="ld" style="background:#E24B4A"></span>Cancelled</span>
+      </div>
+      <div class="chart-card">
+        <div class="chart-wrap" style="height:260px">
+          <canvas id="c3" role="img" aria-label="Integration type breakdown"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">Completion rate by integration type</div>
+  <div class="chart-card">
+    <div class="chart-wrap" style="height:230px">
+      <canvas id="c4" role="img" aria-label="Completion rates"></canvas>
+    </div>
+  </div>
+
+  <div class="section-title">Rolling totals — Open, Done, Cancelled by work type</div>
+  <div class="legend">
+    <span><span class="ld" style="background:#378ADD"></span>Open</span>
+    <span><span class="ld" style="background:#1D9E75"></span>Done</span>
+    <span><span class="ld" style="background:#E24B4A"></span>Cancelled</span>
+  </div>
+  <div class="chart-card">
+    <div class="chart-wrap" style="height:180px">
+      <canvas id="c5roll" role="img" aria-label="Rolling totals by work type"></canvas>
+    </div>
+  </div>
+
+  <div class="section-title">Issues by partner (top 15)</div>
+  <div class="legend">
+    <span><span class="ld" style="background:#378ADD"></span>Done</span>
+    <span><span class="ld" style="background:#E24B4A"></span>Cancelled</span>
+  </div>
+  <div class="chart-card">
+    <div class="chart-wrap" style="height:640px">
+      <canvas id="c5" role="img" aria-label="Partner breakdown"></canvas>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div>
+      <div class="section-title">By assignee</div>
+      <div class="legend">
+        <span><span class="ld" style="background:#1D9E75"></span>Done</span>
+        <span><span class="ld" style="background:#E24B4A"></span>Cancelled</span>
+      </div>
+      <div class="chart-card">
+        <div class="chart-wrap" style="height:260px">
+          <canvas id="c6" role="img" aria-label="Assignee workload"></canvas>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="section-title">Done vs cancelled</div>
+      <div class="legend">
+        <span><span class="ld" style="background:#1D9E75"></span>Done 85.1%</span>
+        <span><span class="ld" style="background:#E24B4A"></span>Cancelled 14.9%</span>
+      </div>
+      <div class="chart-card">
+        <div class="chart-wrap" style="height:260px">
+          <canvas id="c7" role="img" aria-label="Done vs cancelled donut"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div>
+      <div class="section-title">Forward pipeline by sprint</div>
+      <div class="legend">
+        <span><span class="ld" style="background:#378ADD"></span>In flight</span>
+        <span><span class="ld" style="background:#EF9F27"></span>Blocked</span>
+        <span><span class="ld" style="background:#B4B2A9"></span>To do</span>
+      </div>
+      <div class="chart-card">
+        <div class="chart-wrap" style="height:260px">
+          <canvas id="c8" role="img" aria-label="Forward pipeline by sprint"></canvas>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="section-title">Forward pipeline by assignee</div>
+      <div class="legend">
+        <span><span class="ld" style="background:#378ADD"></span>In flight</span>
+        <span><span class="ld" style="background:#EF9F27"></span>Blocked</span>
+        <span><span class="ld" style="background:#B4B2A9"></span>To do</span>
+      </div>
+      <div class="chart-card">
+        <div class="chart-wrap" style="height:260px">
+          <canvas id="c9" role="img" aria-label="Forward pipeline by assignee"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>TC TMS Connectivity · Auto-updated on each Claude refresh · Data from Jira</footer>
+
+<script>
+async function loadData() {
+  const resp = await fetch('data.json?t=' + Date.now());
+  return resp.json();
+}
+
+function buildCharts(d) {
+  const G='#1D9E75',R='#E24B4A',B='#378ADD',A='#EF9F27',GR='#B4B2A9';
+  const tc='#888780', gc='rgba(0,0,0,0.06)';
+  const def = { responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}} };
+
+  // Header
+  document.getElementById('header-date').textContent = d.as_of;
+  document.getElementById('as-of-text').textContent = 'Last refreshed: ' + d.refresh_time + ' · ' + d.refresh_type;
+  document.getElementById('ambiguity-check').textContent = '✅ Ambiguity check: ' + d.ambiguity_check;
+
+  // Metrics
+  const metrics = [
+    { val: d.total_resolved, lbl: 'Total resolved', sub: 'Jan 1 – ' + d.as_of },
+    { val: d.done + ' (' + d.completion_rate + '%)', lbl: 'Completed', sub: d.cancelled + ' cancelled (' + d.cancel_rate + '%)' },
+    { val: d.in_flight, lbl: 'In flight', sub: d.in_flight_detail },
+    { val: d.blocked, lbl: 'Blocked', sub: d.blocked_detail },
+    { val: d.backlog, lbl: 'Backlog', sub: d.unassigned + ' unassigned' },
+    { val: d.sprints, lbl: 'Sprints', sub: '~' + d.avg_per_sprint + ' issues/sprint' },
+    { val: d.edi_done, lbl: 'EDI done', sub: d.edi_cancelled + ' cancelled' },
+    { val: d.api_done, lbl: 'API done', sub: d.api_cancelled + ' cancelled' },
+  ];
+  document.getElementById('metrics').innerHTML = metrics.map(m =>
+    `<div class="metric"><div class="metric-val">${m.val}</div><div class="metric-lbl">${m.lbl}</div><div class="metric-sub">${m.sub}</div></div>`
+  ).join('');
+
+  // Blocked items
+  document.getElementById('blocked-items').innerHTML = d.blocked_items.map(b =>
+    `<div class="blocked-item"><a href="https://trypallet.atlassian.net/browse/${b.key}" target="_blank">${b.key}</a> — ${b.summary} <em>(${b.assignee})</em></div>`
+  ).join('');
+
+  // Charts
+  new Chart(document.getElementById('c1'),{type:'bar',data:{
+    labels:d.sprint_labels,
+    datasets:[
+      {label:'Done',data:d.sprint_done,backgroundColor:G,borderRadius:3,borderSkipped:false},
+      {label:'Cancelled',data:d.sprint_cancelled,backgroundColor:R,borderRadius:3,borderSkipped:false}
+    ]},options:{...def,scales:{x:{stacked:true,grid:{display:false},ticks:{color:tc,font:{size:10}}},y:{stacked:true,grid:{color:gc},ticks:{color:tc,font:{size:11}},beginAtZero:true}}}});
+
+  new Chart(document.getElementById('c2'),{type:'bar',data:{
+    labels:d.type_labels,
+    datasets:[
+      {label:'Done',data:d.type_done,backgroundColor:G,borderRadius:3,borderSkipped:false},
+      {label:'Cancelled',data:d.type_cancelled,backgroundColor:R,borderRadius:3,borderSkipped:false}
+    ]},options:{...def,indexAxis:'y',scales:{x:{grid:{color:gc},ticks:{color:tc,font:{size:11}}},y:{grid:{display:false},ticks:{color:tc,font:{size:11}}}}}});
+
+  new Chart(document.getElementById('c3'),{type:'bar',data:{
+    labels:d.int_labels,
+    datasets:[
+      {label:'Done',data:d.int_done,backgroundColor:G,borderRadius:3,borderSkipped:false},
+      {label:'Cancelled',data:d.int_cancelled,backgroundColor:R,borderRadius:3,borderSkipped:false}
+    ]},options:{...def,indexAxis:'y',scales:{x:{grid:{color:gc},ticks:{color:tc,font:{size:11}}},y:{grid:{display:false},ticks:{color:tc,font:{size:10}}}}}});
+
+  new Chart(document.getElementById('c4'),{type:'bar',data:{
+    labels:d.completion_labels,
+    datasets:[{label:'Completion %',data:d.completion_rates,backgroundColor:d.completion_colors,borderRadius:3,borderSkipped:false}]},
+    options:{...def,indexAxis:'y',scales:{x:{min:0,max:100,grid:{color:gc},ticks:{color:tc,font:{size:11},callback:v=>v+'%'}},y:{grid:{display:false},ticks:{color:tc,font:{size:10}}}},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.parsed.x}% completion`}}}}});
+
+  new Chart(document.getElementById('c5roll'),{type:'bar',data:{
+    labels:['EDI','API','Platform / Support / XML'],
+    datasets:[
+      {label:'Open',data:[d.edi_open,d.api_open,d.other_open],backgroundColor:B,borderRadius:3,borderSkipped:false},
+      {label:'Done',data:[d.edi_done,d.api_done,d.other_done],backgroundColor:G,borderRadius:3,borderSkipped:false},
+      {label:'Cancelled',data:[d.edi_cancelled,d.api_cancelled,d.other_cancelled],backgroundColor:R,borderRadius:3,borderSkipped:false}
+    ]},options:{...def,scales:{x:{grid:{display:false},ticks:{color:tc,font:{size:11}}},y:{grid:{color:gc},ticks:{color:tc,font:{size:11}},beginAtZero:true}}}});
+
+  new Chart(document.getElementById('c5'),{type:'bar',data:{
+    labels:d.partner_labels,
+    datasets:[
+      {label:'Done',data:d.partner_done,backgroundColor:B,borderRadius:3,borderSkipped:false},
+      {label:'Cancelled',data:d.partner_cancelled,backgroundColor:R,borderRadius:3,borderSkipped:false}
+    ]},options:{...def,indexAxis:'y',scales:{x:{stacked:true,grid:{color:gc},ticks:{color:tc,font:{size:11}}},y:{stacked:true,grid:{display:false},ticks:{color:tc,font:{size:10}}}}}});
+
+  new Chart(document.getElementById('c6'),{type:'bar',data:{
+    labels:d.assignee_labels,
+    datasets:[
+      {label:'Done',data:d.assignee_done,backgroundColor:G,borderRadius:3,borderSkipped:false},
+      {label:'Cancelled',data:d.assignee_cancelled,backgroundColor:R,borderRadius:3,borderSkipped:false}
+    ]},options:{...def,scales:{x:{stacked:true,grid:{display:false},ticks:{color:tc,font:{size:10}}},y:{stacked:true,grid:{color:gc},ticks:{color:tc,font:{size:11}},beginAtZero:true}}}});
+
+  new Chart(document.getElementById('c7'),{type:'doughnut',data:{
+    labels:['Done','Cancelled'],datasets:[{data:[d.done,d.cancelled],backgroundColor:[G,R],borderWidth:0,hoverOffset:4}]},
+    options:{responsive:true,maintainAspectRatio:false,cutout:'70%',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.label}: ${c.parsed} (${Math.round(c.parsed/d.total_resolved*100)}%)`}}}}});
+
+  new Chart(document.getElementById('c8'),{type:'bar',data:{
+    labels:d.fwd_sprint_labels,
+    datasets:[
+      {label:'In flight',data:d.fwd_in_flight,backgroundColor:B,borderRadius:3,borderSkipped:false},
+      {label:'Blocked',data:d.fwd_blocked,backgroundColor:A,borderRadius:3,borderSkipped:false},
+      {label:'To do',data:d.fwd_todo,backgroundColor:GR,borderRadius:3,borderSkipped:false}
+    ]},options:{...def,scales:{x:{stacked:true,grid:{display:false},ticks:{color:tc,font:{size:11}}},y:{stacked:true,grid:{color:gc},ticks:{color:tc,font:{size:11}},beginAtZero:true}}}});
+
+  new Chart(document.getElementById('c9'),{type:'bar',data:{
+    labels:d.fwd_assignee_labels,
+    datasets:[
+      {label:'In flight',data:d.fwd_assignee_inflight,backgroundColor:B,borderRadius:3,borderSkipped:false},
+      {label:'Blocked',data:d.fwd_assignee_blocked,backgroundColor:A,borderRadius:3,borderSkipped:false},
+      {label:'To do',data:d.fwd_assignee_todo,backgroundColor:GR,borderRadius:3,borderSkipped:false}
+    ]},options:{...def,indexAxis:'y',scales:{x:{stacked:true,grid:{color:gc},ticks:{color:tc,font:{size:11}}},y:{stacked:true,grid:{display:false},ticks:{color:tc,font:{size:11}}}}}});
+}
+
+loadData().then(buildCharts).catch(e => {
+  document.getElementById('as-of-text').textContent = 'Error loading data: ' + e.message;
+});
+</script>
+</body>
+</html>

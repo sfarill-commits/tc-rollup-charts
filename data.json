@@ -1,0 +1,324 @@
+{
+  "as_of": "May 18, 2026",
+  "refresh_time": "May 18, 2026 \u00b7 2:22 PM EST",
+  "refresh_type": "Full refresh",
+  "ambiguity_check": "passed \u2014 0 cards flagged",
+  "total_resolved": 282,
+  "done": 240,
+  "cancelled": 42,
+  "completion_rate": 85.1,
+  "cancel_rate": 14.9,
+  "in_flight": 9,
+  "in_flight_detail": "1 in progress \u00b7 5 ready \u00b7 3 review",
+  "blocked": 5,
+  "blocked_detail": "3 internal \u00b7 2 forwarder",
+  "backlog": 86,
+  "unassigned": 47,
+  "sprints": 19,
+  "avg_per_sprint": 13,
+  "edi_open": 30,
+  "edi_done": 145,
+  "edi_cancelled": 24,
+  "api_open": 30,
+  "api_done": 35,
+  "api_cancelled": 9,
+  "other_open": 40,
+  "other_done": 60,
+  "other_cancelled": 9,
+  "blocked_items": [
+    {
+      "key": "TC-662",
+      "summary": "New EDI event types (PICKUP_ATTEMPTED etc.) \u2014 waiting internal",
+      "assignee": "Tiffany McGraw"
+    },
+    {
+      "key": "TC-401",
+      "summary": "Team World Wide \u2194 Tenet \u2014 waiting internal approval",
+      "assignee": "Susan Farill"
+    },
+    {
+      "key": "TC-379",
+      "summary": "Averitt EDI 214 Contact Made Status \u2014 waiting internal",
+      "assignee": "Susan Farill"
+    },
+    {
+      "key": "TC-382",
+      "summary": "Expeditors \u2194 Mat Express \u2014 waiting on forwarder",
+      "assignee": "Seth Stitik"
+    },
+    {
+      "key": "TC-370",
+      "summary": "Tenet \u2194 Trumpcard \u2014 waiting on forwarder",
+      "assignee": "Susan Farill"
+    }
+  ],
+  "sprint_labels": [
+    "S1",
+    "S3",
+    "S4",
+    "S5",
+    "S6",
+    "S7",
+    "S8",
+    "S9",
+    "S10",
+    "S11",
+    "S12",
+    "S13",
+    "S14",
+    "S15",
+    "S16",
+    "S17",
+    "S18",
+    "S19"
+  ],
+  "sprint_done": [
+    6,
+    11,
+    9,
+    21,
+    11,
+    10,
+    7,
+    17,
+    7,
+    4,
+    6,
+    14,
+    23,
+    26,
+    28,
+    7,
+    14,
+    19
+  ],
+  "sprint_cancelled": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    6,
+    2,
+    23,
+    1,
+    4,
+    6
+  ],
+  "type_labels": [
+    "Support",
+    "Task",
+    "Existing Integ.",
+    "New Integ.",
+    "Bug/Subtask"
+  ],
+  "type_done": [
+    91,
+    80,
+    56,
+    10,
+    3
+  ],
+  "type_cancelled": [
+    3,
+    14,
+    17,
+    7,
+    1
+  ],
+  "int_labels": [
+    "EDI",
+    "API",
+    "Both EDI+API",
+    "Platform /\nInfrastructure",
+    "Support \u2014\nunclassified",
+    "XML"
+  ],
+  "int_done": [
+    145,
+    35,
+    5,
+    27,
+    28,
+    0
+  ],
+  "int_cancelled": [
+    24,
+    9,
+    1,
+    7,
+    0,
+    1
+  ],
+  "completion_labels": [
+    "Support \u2014\nunclassified",
+    "EDI",
+    "Both EDI+API",
+    "API",
+    "Platform /\nInfrastructure",
+    "XML"
+  ],
+  "completion_rates": [
+    100,
+    85.8,
+    83.3,
+    79.5,
+    79.4,
+    0
+  ],
+  "completion_colors": [
+    "#1D9E75",
+    "#1D9E75",
+    "#1D9E75",
+    "#EF9F27",
+    "#EF9F27",
+    "#E24B4A"
+  ],
+  "partner_labels": [
+    "Expeditors",
+    "Surelogix",
+    "Diamond Cargo",
+    "Exworks",
+    "Watchpoint",
+    "AM Logistics",
+    "Hub Group",
+    "AIT",
+    "EFM",
+    "Mat Express",
+    "Forward Air",
+    "BTX",
+    "Wayfair/BYD",
+    "SEKO",
+    "iCAT"
+  ],
+  "partner_done": [
+    22,
+    21,
+    15,
+    13,
+    12,
+    11,
+    10,
+    9,
+    9,
+    9,
+    8,
+    8,
+    7,
+    5,
+    5
+  ],
+  "partner_cancelled": [
+    2,
+    1,
+    2,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1
+  ],
+  "assignee_labels": [
+    "Tiago Lopes",
+    "Seth Stitik",
+    "Susan Farill",
+    "ametelskyi",
+    "Unassigned"
+  ],
+  "assignee_done": [
+    141,
+    57,
+    36,
+    6,
+    0
+  ],
+  "assignee_cancelled": [
+    8,
+    11,
+    7,
+    2,
+    14
+  ],
+  "fwd_sprint_labels": [
+    "S20",
+    "S21",
+    "S22",
+    "S23",
+    "S24",
+    "S25",
+    "S26+"
+  ],
+  "fwd_in_flight": [
+    9,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "fwd_blocked": [
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    0
+  ],
+  "fwd_todo": [
+    0,
+    6,
+    6,
+    6,
+    8,
+    6,
+    10
+  ],
+  "fwd_assignee_labels": [
+    "Susan",
+    "Unassigned",
+    "ametelskyi",
+    "Tiago",
+    "Seth",
+    "Tiffany"
+  ],
+  "fwd_assignee_inflight": [
+    0,
+    0,
+    2,
+    2,
+    1,
+    0
+  ],
+  "fwd_assignee_blocked": [
+    1,
+    0,
+    0,
+    0,
+    2,
+    1
+  ],
+  "fwd_assignee_todo": [
+    19,
+    47,
+    8,
+    7,
+    5,
+    1
+  ]
+}
